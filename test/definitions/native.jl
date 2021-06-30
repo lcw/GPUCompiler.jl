@@ -155,7 +155,7 @@ end
         after = :(ret)
 
         # Note this follows: emit_call_specfun_other
-        LLVM.Interop.JuliaContext() do ctx
+        Context() do ctx
             T_jlvalue = LLVM.StructType(LLVMType[], ctx)
             T_prjlvalue = LLVM.PointerType(T_jlvalue, #= AddressSpace::Tracked =# 10)
 

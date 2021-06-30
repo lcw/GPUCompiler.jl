@@ -139,7 +139,7 @@ const gc_bits = 0x3 # FIXME
 
 # get the type tag of a type at run-time
 @generated function type_tag(::Val{type_name}) where type_name
-    JuliaContext() do ctx
+    Context() do ctx
         T_tag = convert(LLVMType, tag_type, ctx)
         T_ptag = LLVM.PointerType(T_tag)
 

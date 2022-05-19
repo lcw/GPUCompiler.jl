@@ -183,7 +183,7 @@ isintrinsic(@nospecialize(job::CompilerJob), fn::String) = false
 
 # provide a specific interpreter to use.
 get_interpreter(@nospecialize(job::CompilerJob)) =
-    GPUInterpreter(ci_cache(job), method_table(job), job.source.world)
+    GPUInterpreter(ci_cache(job), method_table(job), job.source.world, interpreter_optimization_params(job))
 
 # does this target support throwing Julia exceptions with jl_throw?
 # if not, calls to throw will be replaced with calls to the GPU runtime
@@ -254,6 +254,9 @@ ci_cache(@nospecialize(job::CompilerJob)) = GLOBAL_CI_CACHE
 
 # the method table to use
 method_table(@nospecialize(job::CompilerJob)) = GLOBAL_METHOD_TABLE
+
+# the optimization parameters to use when constructing the GPUInterpreter
+interpreter_optimization_params(@nospecialize(job::CompilerJob)) = NamedTuple()
 
 # how much debuginfo to emit
 function llvm_debug_info(@nospecialize(job::CompilerJob))

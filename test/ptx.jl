@@ -174,6 +174,39 @@ end
 end
 end
 
+@testset "always_inline" begin
+    function g(i)
+        a = Float64(i)
+        b = Float64(i)
+        c = Float64(i)
+        for i = 1:1000
+            a = fma(a, b, c)
+            b = fma(a, b, c)
+            c = fma(a, b, c)
+        end
+        return c
+    end
+    function f1(i)
+        b = g(i)
+        return
+    end
+    function f2(i)
+        b = g(i)
+        return
+    end
+
+
+    # Either one of the following tests work but not both at the same time; I
+    # think it has to do with code caching
+
+    # asm = sprint(io->ptx_code_native(io, f1, Tuple{Int64}; kernel=true))
+    # @test occursin(r"\.func .*julia_g", asm)
+
+    asm = sprint(io->ptx_code_native(io, f2, Tuple{Int64};
+                                     kernel=true, always_inline=true))
+    @test !occursin(r"\.func .*julia_g", asm)
+end
+
 @testset "child function reuse" begin
     # bug: depending on a child function from multiple parents resulted in
     #      the child only being present once

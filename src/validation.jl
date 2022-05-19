@@ -32,7 +32,8 @@ function check_method(@nospecialize(job::CompilerJob))
     if job.source.kernel
         cache = ci_cache(job)
         mt = method_table(job)
-        interp = GPUInterpreter(cache, mt, world)
+        op = interpreter_optimization_params(job)
+        interp = GPUInterpreter(cache, mt, world, op)
         rt = return_type(only(ms); interp)
 
         if rt != Nothing
